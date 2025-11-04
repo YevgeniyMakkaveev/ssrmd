@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { getAllPostsData } from "@/blog-posts/getAll";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,10 +26,34 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body 
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-50`}
+      > <div style={{
+        display: 'flex'
+      }}>
+          <div style={{
+            width: '200px'
+          }}>
+            <header>
+              <h1>My Blog posts</h1>
+            </header>
+            <ul>
+              {getAllPostsData().sort((a, b) => new Date(a.metadata.date).getTime() - new Date(b.metadata.date).getTime()).map(({ slug, metadata }) => (
+                <li key={slug} style={{
+                  border: '1px black solid'
+                }}>
+                  <Link href={"/blog/" + slug}>
+                    <h2 style={{ fontWeight: 500 }}>{metadata.title}</h2>
+                    <p> {metadata.description}</p>
+
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+          </div>
+          {children}
+        </div>
       </body>
     </html>
   );
